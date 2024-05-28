@@ -1,0 +1,27 @@
+name: Debug context
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  ##############################################################################
+  ##
+  ## Debug job
+  ##
+  ##############################################################################
+
+  Debug_Context:
+    name: Debug received context
+    runs-on: ["self-hosted", "m92p"]
+    environment: ci_cd_pipeline
+
+    steps:
+      - name: Dump Github context
+        run: |
+          echo '${{ toJSON(github.event) }}'
