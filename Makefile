@@ -115,8 +115,8 @@ gen-from-unix:
 		echo "ERROR: SQITCH_DIR environment variable is not defined"; \
 		exit 1; \
 	fi
-	@if [ -z "$(ENGINE)" ]; then \
-		echo "ERROR: ENGINE environment variable is not defined"; \
+	@if [ -z "$(DB_ENGINE)" ]; then \
+		echo "ERROR: DB_ENGINE environment variable is not defined"; \
 		exit 1; \
 	fi
 	@if [ -z "$(DB_USER)" ]; then \
@@ -142,7 +142,7 @@ gen-from-unix:
 	@echo "# Makefile.env generated from UNIX environment variables" > Makefile.env
 	@echo "PROJECT_NAME=$(PROJECT_NAME)" >> Makefile.env
 	@echo "SQITCH_DIR=$(SQITCH_DIR)" >> Makefile.env
-	@echo "ENGINE=$(ENGINE)" >> Makefile.env
+	@echo "DB_ENGINE=$(DB_ENGINE)" >> Makefile.env
 	@echo "DB_USER=$(DB_USER)" >> Makefile.env
 	@echo "DB_PASS=$(DB_PASS)" >> Makefile.env
 	@echo "DB_HOST=$(DB_HOST)" >> Makefile.env
@@ -189,7 +189,7 @@ add:
 
 deploy:
 	@echo "Deploying changes to $(DB_NAME)"
-	@sqitch deploy --cd $(SQITCH_DIR) db:$(ENGINE)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)
+	@sqitch deploy --cd $(SQITCH_DIR) db:$(DB_ENGINE)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)
 	@echo "Changes deployed"
 	@echo "If you added a verify script, you can run 'make verify' to verify the deployment"
 	@echo "If you need to revert the last change, you can run 'make revert' to perform the action"
@@ -197,30 +197,30 @@ deploy:
 deploy-change:
 	@echo "Enter the name of the change to deploy:"
 	@read change_name; \
-	sqitch deploy --cd $(SQITCH_DIR) db:$(ENGINE)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME) $$change_name; \
+	sqitch deploy --cd $(SQITCH_DIR) db:$(DB_ENGINE)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME) $$change_name; \
 	echo "Change $$change_name deployed";
 
 revert:
 	@echo "Reverting last complete change"
-	@sqitch revert --cd $(SQITCH_DIR) db:$(ENGINE)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)
+	@sqitch revert --cd $(SQITCH_DIR) db:$(DB_ENGINE)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)
 	@echo "Last change has been reverted successfully"
 
 revert-one:
 	@echo "Reverting one change back in deploy history"
-	@sqitch revert --cd $(SQITCH_DIR) db:$(ENGINE)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME) --to @HEAD^ || (echo "Revert failed"; exit 1)
+	@sqitch revert --cd $(SQITCH_DIR) db:$(DB_ENGINE)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME) --to @HEAD^ || (echo "Revert failed"; exit 1)
 	@echo "Last change has been reverted successfully"
 
 verify:
 	@echo "Verifying current deployment"
-	@sqitch verify --cd $(SQITCH_DIR) db:$(ENGINE)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)
+	@sqitch verify --cd $(SQITCH_DIR) db:$(DB_ENGINE)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)
 	@echo "Verification completed"
 
 status:
-	@sqitch status --cd $(SQITCH_DIR) db:$(ENGINE)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)
+	@sqitch status --cd $(SQITCH_DIR) db:$(DB_ENGINE)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)
 
 log:
 	@echo "Log of deployed changes"
-	@sqitch log --cd $(SQITCH_DIR) db:$(ENGINE)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)
+	@sqitch log --cd $(SQITCH_DIR) db:$(DB_ENGINE)://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)
 
 clean-sqitch:
 	@echo "Cleaning Sqitch project"
