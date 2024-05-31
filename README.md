@@ -17,7 +17,7 @@ Create a `.env` file in the project root directory with the configuration variab
 ```
 PROJECT_NAME="mypkg"
 SQITCH_DIR="resources"
-ENGINE="pg"
+DB_ENGINE="pg"
 DB_USER="root"
 DB_PASS="password"
 DB_HOST="localhost"
