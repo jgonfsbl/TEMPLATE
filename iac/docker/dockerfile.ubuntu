@@ -11,7 +11,7 @@
 #   -f iac/Dockerfile-ubuntu \
 #   --build-arg VERSION=`cat src/VERSION` \
 #   --build-arg GIT_BRANCH=`git branch --show-current` \
-#   -t EwalaIT/PROJECTNAMEHERE:`cat src/VERSION` .
+#   -t safebytelabs/PROJECTNAMEHERE:`cat src/VERSION` .
 #
 #
 # Platform specific images (when you build for your own platform)
@@ -20,7 +20,7 @@
 #   --build-arg BUILD_DATE=`date -u +"%Y-%m-%d"` \
 #   --build-arg VERSION=`cat src/VERSION` \
 #   --build-arg GIT_BRANCH=`git branch --show-current` \
-#   -t ghcr.io/EwalaIT/PROJECTNAMEHERE:`cat src/VERSION` .
+#   -t ghcr.io/safebytelabs/PROJECTNAMEHERE:`cat src/VERSION` .
 #
 #
 # Cross-compile platform independent images (when you use a build facility
@@ -35,7 +35,7 @@
 #   --build-arg BUILD_DATE=`date -u +"%Y-%m-%d"` \
 #   --build-arg VERSION=`cat src/VERSION` \
 #   --build-arg GIT_BRANCH=`git branch --show-current` \
-#   -t ghcr.io/EwalaIT/PROJECTNAMEHERE:`cat src/VERSION` --push .
+#   -t ghcr.io/safebytelabs/PROJECTNAMEHERE:`cat src/VERSION` --push .
 #
 # #############################################################################
 
