@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "skel"
+version = "0.1.0"
+description = "Skeleton for a Python project"
+authors = ["Jonathan González <jgonf@safebytelabs.com>"]
+license = "MPL2"
+readme = "README.md"
+
+# -- manually added - begin of block ----------------------
+#
+packages = [{ include = "mypkg", from = "src" }]
+
+[tool.semantic_release]
+branch = "main"
+version_variables = ["src/mypkg/__init__.py:__version__"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+#
+# -- manually added - end of block ------------------------
+
+[tool.poetry.dependencies]
+python = "^3.12"
+Flask = "^3.0.3"
+python-dotenv = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

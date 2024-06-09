@@ -5,7 +5,7 @@
 
 """ MYPKG """
 
-__updated__ = "2024-05-12 19:19:44"
+__updated__ = "2024-05-31 13:17:45"
 
 
 from psycopg2 import pool
@@ -18,7 +18,7 @@ def init_db():
         1,
         20,
         user=current_app.config["DB_USER"],
-        password=current_app.config["DB_PASSWORD"],
+        password=current_app.config["DB_PASS"],
         host=current_app.config["DB_HOST"],
         port=current_app.config["DB_PORT"],
         database=current_app.config["DB_NAME"],
