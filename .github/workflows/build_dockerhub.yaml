@@ -2,7 +2,7 @@
 ## GITHUB ACTIONS PIPELINE
 ## Actions to be taken when pushing or PR to a branch
 ##
-## Last update: 2024/06/16
+## Last update: 2024/07/05
 ##
 
 on:
@@ -63,7 +63,7 @@ jobs:
       - name: Set version variable
         id: version
         run: |
-          version=$(cat src/cosper/__init__.py | grep version | awk '{ print $3 }' | tr -d '"')
+          version=$(cat ${{ vars.CI_VER_FILE }} | grep version | awk '{ print $3 }' | tr -d '"')
           echo "containerver=$version" >> $GITHUB_OUTPUT
 
       - name: Extract dockerfile suffix
@@ -76,6 +76,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           file: ${{ vars.CI_DOCKERFILE }}
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ vars.CI_PLATFORMS }}
           push: true
           tags: ${{ vars.CI_DEST_REPO }}:${{ steps.version.outputs.containerver }}-${{ steps.suffix.outputs.arch }}
