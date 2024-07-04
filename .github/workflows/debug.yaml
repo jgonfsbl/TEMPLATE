@@ -18,8 +18,8 @@ jobs:
 
   Debug_Context:
     name: Debug received context
-    # runs-on: ubuntu-latest
-    runs-on: ["self-hosted", "m92p"]
+    runs-on: ubuntu-latest
+    # runs-on: ["self-hosted", "m92p"] // Use only for organization runners
     environment: ci_cd_pipeline
 
     steps:
