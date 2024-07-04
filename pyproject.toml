@@ -23,6 +23,10 @@ pythonpath = ["src"]
 python = "^3.12"
 Flask = "^3.0.3"
 python-dotenv = "^1.0.1"
+psycopg2-binary = "^2.9.9"
+marshmallow = "^3.21.3"
+pulumi = "^3.122.0"
+pulumi-aws = "^6.43.0"
 
 
 [build-system]

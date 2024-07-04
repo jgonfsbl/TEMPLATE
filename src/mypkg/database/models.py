@@ -5,11 +5,11 @@
 
 """ MYPKG """
 
-__updated__ = "2024-05-12 19:47:43"
+__updated__ = "2024-07-04 17:49:54"
 
 
-from connections import execute_query
-from schemas import templateSchema
+from database.connections import execute_query
+
 
 ###############################################################################
 #
@@ -18,58 +18,109 @@ from schemas import templateSchema
 ###############################################################################
 
 
+# CRUD operations
+# C - Create
+def add_new_template(template_data):
+    """Add a new template to the database."""
+
+    _template_id = template_data.get("templateid")
+
+    query = f"SELECT * FROM templates WHERE templateid = '{_template_id}' ORDER BY tidx ASC;"
+    cursor = execute_query(query)
+    item_exists = cursor.fetchone()
+
+    if not item_exists:
+        return None  # The session does not exist
+    else:
+        query = f"SELECT * FROM templates WHERE templateid = '{_template_id}' ORDER BY tidx ASC;"
+        cursor = execute_query(query)
+        template_exists = cursor.fetchone()
+
+        if template_exists:
+            return None  # The template already exists
+        else:
+            #
+            # Do some processing here with the template_data
+            #
+            query = f"""
+                INSERT INTO templates (templateid, name, description, content)
+                VALUES ('', '', '', '');
+                RETURNING templateid;
+            """
+            cursor = execute_query(query, commit=True)
+            return cursor.rowcount
+
+
+# CRUD operations
+# R - Read
 def get_all_templates():
     """Retrieve all templates from the database."""
-    cursor = execute_query("SELECT * FROM templates;")
-    templates = cursor.fetchall()
-    schema = templateSchema(many=True)
-    try:
-        templates = schema.load(templates)
-    except Exception as e:
-        print(f"Validation error: {e}")
-    cursor.close()
-    return templates
+    query = "SELECT * FROM user_sessions ORDER BY tidx ASC;"
+    cursor = execute_query(query)
+    session_data = cursor.fetchall()
+    #
+    # Do some processing here with the session_data
+    #
+    response = {}
+    return response
 
 
-def add_template(template_data):
-    """Add a new template to the database."""
-    sql = "INSERT INTO templates (name, description, content) VALUES (%s, %s, %s) RETURNING id;"
-    cursor = execute_query(
-        sql, (template_data["name"], template_data["description"], template_data["content"]), commit=True
-    )
-    template_id = cursor.fetchone()[0]
-    schema = templateSchema()
-    try:
-        template_data = schema.load(template_data)
-    except Exception as e:
-        print(f"Validation error: {e}")
-    cursor.close()
-    return template_id
-
-
-def get_template(template_id):
+# CRUD operations
+# R - Read
+def get_by_templateid(template_id):
     """Retrieve a template from the database."""
-    cursor = execute_query("SELECT * FROM templates WHERE id = %s;", (template_id,))
-    template = cursor.fetchone()
-    schema = templateSchema()
     try:
-        template = schema.load(template)
-    except Exception as e:
-        print(f"Validation error: {e}")
-    cursor.close()
-    return template
+        query = f"SELECT * FROM templates WHERE templateid = '{template_id}' ORDER BY tidx ASC;"
+        cursor = execute_query(query)
+        session_data = cursor.fetchone()
+        #
+        # Do some processing here with the session_data
+        #
+        response = {}
+        return response
+    except Exception as error:
+        print(error)  # debug only
+        return None
 
 
+# CRUD operations
+# U - Update
 def update_template(template_id, template_data):
     """Update a template in the database."""
-    sql = f"UPDATE templates \ 
-            SET name = '{template_data['name']}', \
-                description = '{template_data['description']}', \
-                content = '{template_data['content']}' \
-            WHERE id = {template_id};"
-    execute_query(sql, commit=True)
+
+    # Extract data from session_data
+    _var = template_data.get("var")
+
+    # Combine all data into one dictionary
+    data = {
+        "template_id": template_id,
+        "var": _var,
+        #
+        # Add more data here
+        #
+    }
+
+    # Build the query with f-strings
+    query = f"""
+    UPDATE templates SET
+        #...
+        #...
+        #...
+        modified = NOW()
+    WHERE templateid = '{data['template_id']}';
+    """
+
+    # Execute the query
+    cursor = execute_query(query, data, commit=True)
+    return cursor.rowcount
 
 
+# CRUD operations
+# D - Delete
 def delete_template(template_id):
     """Delete a template from the database."""
-    execute_query("DELETE FROM templates WHERE id = %s;", (template_id,), commit=True)
+    # Build the query
+    query = f"DELETE FROM templates WHERE templateid = '{template_id}';"
+    # Execute the query
+    cursor = execute_query(query, commit=True)
+    return cursor.rowcount

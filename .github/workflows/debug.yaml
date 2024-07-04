@@ -25,4 +25,23 @@ jobs:
     steps:
       - name: Dump Github context
         run: |
+          echo '${{ 'Event' }}'
           echo '${{ toJSON(github.event) }}'
+          echo '${{ 'Workflow' }}'
+          echo '${{ toJSON(github.workflow) }}' 
+          echo '${{ 'Job' }}'
+          echo '${{ toJSON(github.job) }}'
+          echo '${{ 'Run ID & Number' }}'
+          echo '${{ toJSON(github.run_id) }}'
+          echo '${{ toJSON(github.run_number) }}'
+          echo '${{ 'Actor & Repository' }}'
+          echo '${{ toJSON(github.actor) }}'
+          echo '${{ toJSON(github.repository) }}'
+          echo '${{ 'SHA & REFs' }}'
+          echo '${{ toJSON(github.sha) }}'
+          echo '${{ toJSON(github.ref) }}'
+          echo '${{ toJSON(github.head_ref) }}'
+          echo '${{ toJSON(github.base_ref) }}'
+          echo '${{ 'Workspace & Action' }}'
+          echo '${{ toJSON(github.workspace) }}'
+          echo '${{ toJSON(github.action) }}'

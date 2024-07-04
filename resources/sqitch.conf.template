@@ -1,8 +1,8 @@
 [core]
-engine = $ENGINE
+engine = $DB_ENGINE
 
-[engine "$ENGINE"]
-target = db:$ENGINE:$PROJECT_NAME
+[engine "$DB_ENGINE"]
+target = db:$DB_ENGINE:$PROJECT_NAME
 registry = sqitch
 top_dir = .
 
@@ -12,5 +12,5 @@ client = /opt/homebrew/bin/psql
 # -- Linux
 # client = /usr/bin/psql
 
-[target "db:$ENGINE:$PROJECT_NAME"]
-uri = db:$ENGINE://$DB_USER:$DB_PASS@$DB_HOST:$DB_PORT/$DB_NAME
+[target "db:$DB_ENGINE:$PROJECT_NAME"]
+uri = db:$DB_ENGINE://$DB_USER:$DB_PASS@$DB_HOST:$DB_PORT/$DB_NAME

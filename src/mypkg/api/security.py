@@ -5,12 +5,14 @@
 
 """ MYPKG """
 
-__updated__ = "2024-05-12 12:20:08"
+__updated__ = "2024-07-04 17:13:59"
 
 
 def authenticate():
     """Code to authenticate a user"""
+    return "Authenticate"
 
 
 def authorize():
     """Code to authorize a user"""
+    return "Authorize"

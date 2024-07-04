@@ -4,7 +4,7 @@
 ###  v.1.0.0
 ###  Author: Jonathan Gonzalez <jgonf@safebytelabs.com>
 ###  Creation date: 2024-04-01
-###  Last update: 2024-04-24
+###  Last update: 2024-06-18
 ###  License: MPL-2.0
 ###
 ################################################################################
@@ -22,7 +22,10 @@
 #
 # 	 4. Run 'make init' to initialize a new Sqitch project in its project folder
 #
-# 	 5. Run 'make add' to add a new change to the project using a wizzard
+# 	 5. Run 
+#			'make add' to add a new change to the project using a wizzard
+#		  or
+#			'make add-pipeline CHANGE_NAME=<change_name>' to add a pipeline change
 #
 # 	 6. Run 
 #			'make deploy' to deploy changes to the database
@@ -65,6 +68,7 @@
         create-db \
         init \
         add \
+		add-pipeline \
         deploy \
         deploy-change \
         revert \
@@ -91,11 +95,16 @@ default: help
 # ##############################################################################
 
 gen-from-env:
-	@cat .env | grep -v '^#' | while IFS= read -r line; do \
+	@if [ -f Makefile.env ]; then \
+		> Makefile.env; \
+	fi
+	@echo "Generating Makefile.env from .env file..."
+	@cat src/cosper/.env | grep -v '^#' | grep '^export ' | while IFS= read -r line; do \
 		if [ -n "$$line" ]; then \
+			line=$${line#export }; \
 			key=$$(echo $$line | cut -d '=' -f 1); \
 			value=$$(echo $$line | cut -d '=' -f 2-); \
-			if [ -n "$$key" ]; then \
+			if [ -n "$$key" ] && [[ "$$key" != FLASK_* ]]; then \
 				echo "$$key=$$value" >> Makefile.env; \
 			fi; \
 		fi; \
@@ -172,7 +181,7 @@ create-db:
 # ##############################################################################
 
 init:
-	@sqitch init $(PROJECT_NAME) --cd $(SQITCH_DIR) --engine $(ENGINE)
+	@sqitch init $(PROJECT_NAME) --cd $(SQITCH_DIR) --engine $(DB_ENGINE)
 	@envsubst < $(SQITCH_DIR)/sqitch.conf.template > $(SQITCH_DIR)/sqitch.conf
 	@echo "Sqitch project initialized in $(SQITCH_DIR)"
 	@echo "Now you can execute 'make add' to add a new change to the project"
@@ -182,6 +191,15 @@ add:
 	@read change_name; \
 	sqitch add --cd $(SQITCH_DIR) $$change_name
 	@echo "Change $$change_name added to the project"
+	@echo "Now you must edit the change script in $(SQITCH_DIR)/deploy directory"
+	@echo "Remember to also add, at least, a revert script in $(SQITCH_DIR)/revert directory"
+	@echo "When you're ready, run 'make deploy' to deploy the changes to the database"
+	@echo "If you added more than one change, you can run 'make deploy-change' to deploy up to a specific change"
+
+add-pipeline:
+	@echo "Enter the name of the change:"
+	sqitch add --cd $(SQITCH_DIR) $(CHANGE_NAME)
+	@echo "Change $(CHANGE_NAME) added to the project"
 	@echo "Now you must edit the change script in $(SQITCH_DIR)/deploy directory"
 	@echo "Remember to also add, at least, a revert script in $(SQITCH_DIR)/revert directory"
 	@echo "When you're ready, run 'make deploy' to deploy the changes to the database"
@@ -249,6 +267,7 @@ help:
 	@echo "  create-db     Create the database <$(DB_NAME)>"
 	@echo "  init          Initialize a new Sqitch project in its project folder $(SQITCH_DIR)"
 	@echo "  add           Add a new change to the project using a wizzard"
+	@echo "  add-pipeline  Add a pipeline change with make add-pipeline CHANGE_NAME=<change_name>"
 	@echo "  deploy        Deploy changes to the database"
 	@echo "  deploy-change Deploy a specific change to the database"
 	@echo "  revert        Revert the last deployed change"
@@ -258,3 +277,4 @@ help:
 	@echo "  log           Show log of deployed changes"
 	@echo "  clean-sqitch  Clean Sqitch project"
 	@echo "  help          Show this help message"
+	

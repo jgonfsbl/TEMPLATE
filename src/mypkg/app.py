@@ -5,17 +5,16 @@
 
 """ MYPKG """
 
-__updated__ = "2024-06-09 10:23:23"
+__updated__ = "2024-07-04 14:47:27"
 
 
 # Import of general libraries
-from flask import Flask
+from flask import Flask, url_for, g
 
 # Import of local libraries
 from config import Config
-
-from database.connections import db
-from database.models import templateSchema
+from database.connections import init_db, close_db
+from utils.helpers import headerapikey
 
 # import of local api handlers
 from api.templates import get_templates, add_templates, get_template_id, update_template_id, delete_template_id
@@ -61,12 +60,20 @@ app.add_url_rule("/int/integration", "integration1_message", integration1_messag
 @app.before_request
 def before_request():
     """This function handles HTTP request as it arrives to the API"""
+    if not hasattr(g, "db_pool"):
+        init_db()
 
 
 @app.after_request
 def after_request(response):
     """This function handles HTTP response before send it back to client"""
     return response
+
+
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    """Close the database connection at the end of each request"""
+    close_db()
 
 
 ###############################################################################
@@ -76,5 +83,11 @@ def after_request(response):
 ###############################################################################
 
 
+@app.route("/status")
+def get_status():
+    """Status endpoint"""
+    return "OK"
+
+
 if __name__ == "__main__":
-    app.run()
+    app.run(host=app.config["FLASK_HOST"], port=app.config["FLASK_PORT"], debug=app.config["FLASK_DEBUG"])

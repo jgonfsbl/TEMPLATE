@@ -15,14 +15,25 @@ Pre-Commit has been installed into this repository as a dependency. In order for
 Create a `.env` file in the project root directory with the configuration variables for databse, among other variables that might also exist there:
 
 ```
-PROJECT_NAME="mypkg"
-SQITCH_DIR="resources"
-DB_ENGINE="pg"
-DB_USER="root"
-DB_PASS="password"
-DB_HOST="localhost"
-DB_PORT="5432"
-DB_NAME="mypkg"
+export FLASK_APP=app.py
+export FLASK_ENV=development
+export FLASK_DEBUG=1
+export FLASK_HOST=127.0.0.1
+export FLASK_PORT=5000
+export FLASK_SECRET_KEY="PutOneOfYourKeysHere"
+export FLASK_API_KEY="PutAnotherOfYourKeysHere"
+
+export GUNIPORT=6000
+
+export PROJECT_NAME=mypkg
+export SQITCH_DIR=resources
+export DB_ENGINE=pg
+export DB_USER=root
+export DB_PASS=password
+export DB_HOST=localhost
+export DB_PORT=5432
+export DB_NAME=mypkg
+export LOG_LEVEL=DEBUG
 ```
 
 ## REPOSITORY MANAGEMENT

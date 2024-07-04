@@ -80,7 +80,7 @@ CMakeCache.txt
 CMakeFiles
 CMakeScripts
 Testing
-Makefile
+Makefile.env
 cmake_install.cmake
 install_manifest.txt
 compile_commands.json
@@ -109,6 +109,9 @@ bower_components/
 
 # IDEs and editors
 .idea/
+
+# local resources folder used by Sqitch
+resources/*
 
 # misc
 .sass-cache/

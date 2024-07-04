@@ -5,43 +5,20 @@
 
 """ MYPKG """
 
-__updated__ = "2024-05-12 19:24:37"
+__updated__ = "2024-07-04 17:28:36"
 
 
 from marshmallow import Schema, fields, validate, validates, ValidationError
 
 
-class templateSchema(Schema):
-    """Schema for the templates table.
+class Template_Schema(Schema):
+    pass
 
-    Args:
-        Schema (_type_): _description_
 
-    Raises:
-        ValidationError: _description_
-        ValidationError: _description_
-        ValidationError: _description_
-    """
-
-    id = fields.Integer(dump_only=True)
-    name = fields.String(required=True, validate=validate.Length(min=1, max=100))
-    description = fields.String(required=True, validate=validate.Length(min=1, max=100))
-    content = fields.String(required=True, validate=validate.Length(min=1, max=1000))
-
-    @validates("name")
-    def validate_name(self, value):
-        """Validate the name field"""
-        if value == "bad":
-            raise ValidationError("Name cannot be 'bad'")
-
-    @validates("description")
-    def validate_description(self, value):
-        """Validate the description field"""
-        if value == "bad":
-            raise ValidationError("Description cannot be 'bad'")
-
-    @validates("content")
-    def validate_content(self, value):
-        """Validate the content field"""
-        if value == "bad":
-            raise ValidationError("Content cannot be 'bad'")
+class TemplateId_Schema(Schema):
+    sessionid = fields.Str(
+        required=True,
+        validate=validate.Regexp(
+            r"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$", error="Invalid UUID4 format"
+        ),
+    )
