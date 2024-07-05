@@ -5,14 +5,30 @@
 
 """ MYPKG """
 
-__updated__ = "2024-05-12 12:23:37"
+__updated__ = "2024-07-05 10:43:22"
 
 
+import json
 import pytest
-from app import main
+from mypkg.app import get_status, app
 
 
-def test_main(capfd):
-    main()
-    captured = capfd.readouterr()
-    assert captured.out == "Hello World!\n"
+def test_get_index():
+    client = app.test_client()
+    headers = {"X-API-KEY": "e8b21d5c-6658-481b-abe2-fd990fb7c8a6"}
+    response = client.get("/", headers=headers)
+    assert response.status_code == 200
+    assert response.content_type == "application/json"
+    data = json.loads(response.data)
+    assert data["message"] == "Index HETEOAS"
+
+
+def test_get_status():
+    """Test the get_status function"""
+    expected = "OK"
+    response = get_status()
+    assert response == expected
+
+
+if __name__ == "__main__":
+    pytest.main()

@@ -5,10 +5,11 @@
 
 """ MYPKG """
 
-__updated__ = "2024-07-04 14:47:27"
+__updated__ = "2024-07-05 10:50:27"
 
 
 # Import of general libraries
+import psycopg2
 from flask import Flask, url_for, g
 
 # Import of local libraries
@@ -61,7 +62,11 @@ app.add_url_rule("/int/integration", "integration1_message", integration1_messag
 def before_request():
     """This function handles HTTP request as it arrives to the API"""
     if not hasattr(g, "db_pool"):
-        init_db()
+        try:
+            init_db()
+        except psycopg2.OperationalError:
+            print(f"Error: Connection to database failed")
+            exit(1)
 
 
 @app.after_request
@@ -73,7 +78,11 @@ def after_request(response):
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     """Close the database connection at the end of each request"""
-    close_db()
+    try:
+        close_db()
+    except psycopg2.OperationalError:
+        print(f"Error: Connection to database failed")
+        exit(1)
 
 
 ###############################################################################
@@ -83,6 +92,14 @@ def shutdown_session(exception=None):
 ###############################################################################
 
 
+@app.route("/")
+@headerapikey
+def get_index():
+    """Main index"""
+    response = {"message": "Index HETEOAS", "links": []}
+    return response
+
+
 @app.route("/status")
 def get_status():
     """Status endpoint"""
@@ -90,4 +107,8 @@ def get_status():
 
 
 if __name__ == "__main__":
-    app.run(host=app.config["FLASK_HOST"], port=app.config["FLASK_PORT"], debug=app.config["FLASK_DEBUG"])
+    app.run(
+        host=app.config["FLASK_HOST"],
+        port=app.config["FLASK_PORT"],
+        debug=app.config["FLASK_DEBUG"],
+    )

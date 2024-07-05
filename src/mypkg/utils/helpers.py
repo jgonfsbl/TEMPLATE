@@ -5,7 +5,7 @@
 
 """ PROJECT NAME """
 
-__updated__ = "2024-07-04 15:10:23"
+__updated__ = "2024-07-05 10:48:14"
 
 from time import time
 from flask import request, jsonify
@@ -31,7 +31,7 @@ def headerapikey(func):
     def wrapper(*args, **kwargs):
         try:
             apikey = request.headers.get("X-API-KEY")
-            if apikey in current_app.config["X-API-KEY"]:  # OR apikey in redis.get("api:keys")
+            if apikey in current_app.config["X_API_KEY"]:  # OR apikey in redis.get("api:keys")
                 return func(*args, **kwargs)
             else:
                 return {"error": "Unauthorized"}, 401  # Unauthorized

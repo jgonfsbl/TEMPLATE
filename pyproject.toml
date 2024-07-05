@@ -10,6 +10,9 @@ readme = "README.md"
 #
 packages = [{ include = "mypkg", from = "src" }]
 
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.2"
+
 [tool.semantic_release]
 branch = "main"
 version_variables = ["src/mypkg/__init__.py:__version__"]
