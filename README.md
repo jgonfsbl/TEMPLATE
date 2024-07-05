@@ -17,13 +17,15 @@ Create a `.env` file in the project root directory with the configuration variab
 ```
 export FLASK_APP=app.py
 export FLASK_ENV=development
-export FLASK_DEBUG=1
+export FLASK_DEBUG=True
 export FLASK_HOST=127.0.0.1
-export FLASK_PORT=5000
-export FLASK_SECRET_KEY="PutOneOfYourKeysHere"
-export FLASK_API_KEY="PutAnotherOfYourKeysHere"
+export FLASK_PORT=9000
+export FLASK_LOG_LEVEL=DEBUG
+export FLASK_SECRET_KEY="Sup3rC0mpl3xS3cr3tK3y"
 
-export GUNIPORT=6000
+export X_API_KEY=c4dd4532-6275-4b51-bb18-d84e7ac3262e
+
+export GUNIPORT=5000
 
 export PROJECT_NAME=mypkg
 export SQITCH_DIR=resources
@@ -33,7 +35,6 @@ export DB_PASS=password
 export DB_HOST=localhost
 export DB_PORT=5432
 export DB_NAME=mypkg
-export LOG_LEVEL=DEBUG
 ```
 
 ## REPOSITORY MANAGEMENT
