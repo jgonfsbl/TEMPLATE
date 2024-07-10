@@ -30,6 +30,8 @@ psycopg2-binary = "^2.9.9"
 marshmallow = "^3.21.3"
 pulumi = "^3.122.0"
 pulumi-aws = "^6.43.0"
+requests = "^2.32.3"
+redis = "^5.0.7"
 
 
 [build-system]
