@@ -3,28 +3,16 @@
 
 # pylint: disable=W0102,E0712,C0103,R0903
 
-""" PROJECT NAME """
+""" MYPKG """
 
-__updated__ = "2024-07-05 10:48:14"
+__updated__ = "2024-07-06 17:23:46"
 
 from time import time
 from flask import request, jsonify
 from flask import current_app
 
 
-def exectime(func):
-    """Measure the time taken to execute a function."""
-
-    def wrapper(*args, **kwargs):
-        start_time = time.time()
-        result = func(*args, **kwargs)
-        end_time = time.time()
-        print(f"Time taken: {end_time - start_time:.2f} seconds")
-        return result
-
-    return wrapper
-
-
+# Basic decorator for checking the API key in the header
 def headerapikey(func):
     """Check the header for the API key"""
 
@@ -45,6 +33,21 @@ def headerapikey(func):
     return wrapper
 
 
+# Measure the time taken to execute a function
+def exectime(func):
+    """Measure the time taken to execute a function."""
+
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        print(f"Time taken: {end_time - start_time:.2f} seconds")
+        return result
+
+    return wrapper
+
+
+# Format the internal Flask error messages for the JSON response
 def format_error_message(error_dict):
     """Parse the internal error messages and format them for using them in a JSON response"""
 

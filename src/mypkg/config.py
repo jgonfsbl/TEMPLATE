@@ -3,7 +3,7 @@
 # pylint: disable=W0102,E0712,C0103,R0903
 """ MYPKG """
 
-__updated__ = "2024-07-05 10:53:02"
+__updated__ = "2024-07-06 17:28:35"
 
 from os import environ
 from dotenv import load_dotenv, find_dotenv
@@ -25,6 +25,10 @@ class Config:
     # APIs
     SECRET_KEY = environ.get("FLASK_SECRET_KEY" or "you-will-never-guess-me")
     X_API_KEY = environ.get("X_API_KEY" or "you-will-never-guess-me")
+
+    # Telemetry
+    TELEMETRY_ENABLED = environ.get("TELEMETRY_ENABLED" or "True")
+    TELEMETRY_URL = environ.get("TELEMETRY_URL" or "http://localhost:3000/telemetry")
 
     # Database
     DB_ENGINE = environ.get("DB_ENGINE" or "pg")

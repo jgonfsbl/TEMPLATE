@@ -5,13 +5,13 @@
 
 """ MYPKG """
 
-__updated__ = "2024-07-04 17:45:17"
+__updated__ = "2024-07-06 17:43:40"
 
 
 from flask import request, jsonify
 from marshmallow.exceptions import ValidationError as MarshValidationError
-from database.connections import close_db
-from database.models import (
+from database.pg_conn_pool import close_db
+from database.pg_models import (
     add_new_template,
     get_all_templates,
     get_by_templateid,

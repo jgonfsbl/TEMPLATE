@@ -5,7 +5,7 @@
 
 """ MYPKG """
 
-__updated__ = "2024-07-05 10:50:27"
+__updated__ = "2024-07-08 23:54:38"
 
 
 # Import of general libraries
@@ -14,8 +14,9 @@ from flask import Flask, url_for, g
 
 # Import of local libraries
 from config import Config
-from database.connections import init_db, close_db
+from database.pg_conn_pool import init_db, close_db
 from utils.helpers import headerapikey
+from utils.telemetry import capture_request, capture_response
 
 # import of local api handlers
 from api.templates import get_templates, add_templates, get_template_id, update_template_id, delete_template_id
@@ -60,7 +61,12 @@ app.add_url_rule("/int/integration", "integration1_message", integration1_messag
 
 @app.before_request
 def before_request():
-    """This function handles HTTP request as it arrives to the API"""
+    """
+    This function handles HTTP request as it arrives to the API
+    """
+    # Action 1 - Telemetry
+    capture_request()
+    # Action 2 - Connect to the database pool if not connected
     if not hasattr(g, "db_pool"):
         try:
             init_db()
@@ -71,13 +77,18 @@ def before_request():
 
 @app.after_request
 def after_request(response):
-    """This function handles HTTP response before send it back to client"""
-    return response
+    """
+    This function handles HTTP response before send it back to client
+    """
+    # Action 1 - Return the response with telemetry data
+    return capture_response(response)
 
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
-    """Close the database connection at the end of each request"""
+    """
+    Close the database connection at the end of each request
+    """
     try:
         close_db()
     except psycopg2.OperationalError:

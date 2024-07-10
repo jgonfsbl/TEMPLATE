@@ -5,10 +5,10 @@
 
 """ MYPKG """
 
-__updated__ = "2024-07-04 17:49:54"
+__updated__ = "2024-07-06 17:43:38"
 
 
-from database.connections import execute_query
+from database.pg_conn_pool import execute_query
 
 
 ###############################################################################
