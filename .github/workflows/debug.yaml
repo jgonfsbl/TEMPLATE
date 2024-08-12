@@ -51,10 +51,8 @@ jobs:
           echo '${{ 'SHA & REFs' }}'
           echo '${{ toJSON(github.sha) }}'
           echo '${{ toJSON(github.ref) }}'
-          echo '${{ toJSON(github.head_ref) }}'
-          echo '${{ toJSON(github.base_ref) }}'
           
           echo '${{ '-----------------------------------------------------' }}'
           echo '${{ 'Workspace & Action' }}'
           echo '${{ toJSON(github.workspace) }}'
-          echo '${{ toJSON(github.action) }}'
+
