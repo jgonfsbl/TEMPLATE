@@ -30,27 +30,9 @@ jobs:
           echo '${{ toJSON(github.event) }}'
           
           echo '${{ '-----------------------------------------------------' }}'
-          echo '${{ 'Workflow' }}'
-          echo '${{ toJSON(github.workflow) }}' 
-          
-          echo '${{ '-----------------------------------------------------' }}'
-          echo '${{ 'Job' }}'
-          echo '${{ toJSON(github.job) }}'
-          
-          echo '${{ '-----------------------------------------------------' }}'
           echo '${{ 'Run ID & Number' }}'
           echo '${{ toJSON(github.run_id) }}'
           echo '${{ toJSON(github.run_number) }}'
-          
-          echo '${{ '-----------------------------------------------------' }}'
-          echo '${{ 'Actor & Repository' }}'
-          echo '${{ toJSON(github.actor) }}'
-          echo '${{ toJSON(github.repository) }}'
-          
-          echo '${{ '-----------------------------------------------------' }}'
-          echo '${{ 'SHA & REFs' }}'
-          echo '${{ toJSON(github.sha) }}'
-          echo '${{ toJSON(github.ref) }}'
           
           echo '${{ '-----------------------------------------------------' }}'
           echo '${{ 'Workspace & Action' }}'
