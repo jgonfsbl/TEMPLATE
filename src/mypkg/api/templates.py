@@ -66,8 +66,8 @@ def get_templates():
         # -- Evaluate the request and return the appropriate response
         templates = get_all_templates()
 
-        # if templates and templates.get('data'):
-        if templates:
+        # -- Evaluate if there are records to return or return an error
+        if templates and templates.get('data'):
             return jsonify(templates), 200  # OK
         else:
             return {"error": "no records found in database"}, 404  # Not Found
