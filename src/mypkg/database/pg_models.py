@@ -53,15 +53,19 @@ def add_new_template(template_data):
 
 # CRUD operations
 # R - Read
-def get_all_templates():
-    """Retrieve all templates from the database."""
-    query = "SELECT * FROM user_sessions ORDER BY tidx ASC;"
-    cursor = execute_query(query)
+def get_all_templates(limit=10, offset=0):
+    """Retrieve all templates from the database, with pagination support"""
+    query = "SELECT * FROM user_sessions ORDER BY tidx ASC LIMIT %s OFFSET %s;"
+    cursor = execute_query(query, (limit, offset))
     session_data = cursor.fetchall()
     #
     # Do some processing here with the session_data
     #
-    response = {}
+    response = {
+        "data": session_data,
+        "limit": limit,
+        "offset": offset
+    }
     return response
 
 
