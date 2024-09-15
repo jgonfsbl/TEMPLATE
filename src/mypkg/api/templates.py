@@ -52,8 +52,21 @@ def add_templates():
 def get_templates():
     """Code to fetch all templates"""
     try:
+        # Retrieve limit and offset from query parameters, with defaults
+        limit = request.args.get('limit', default=10, type=int)
+        offset = request.args.get('offset', default=0, type=int)
+
+        # Enforce the hard limit of 50 records per request
+        if limit > 50:
+            limit = 50
+
+        # Fetch the templates using pagination with the adjusted limit
+        templates = get_all_templates(limit=limit, offset=offset)
+        
         # -- Evaluate the request and return the appropriate response
         templates = get_all_templates()
+
+        # if templates and templates.get('data'):
         if templates:
             return jsonify(templates), 200  # OK
         else:
