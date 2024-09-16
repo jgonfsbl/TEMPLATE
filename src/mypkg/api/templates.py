@@ -63,9 +63,6 @@ def get_templates():
         # Fetch the templates using pagination with the adjusted limit
         templates = get_all_templates(limit=limit, offset=offset)
         
-        # -- Evaluate the request and return the appropriate response
-        templates = get_all_templates()
-
         # -- Evaluate if there are records to return or return an error
         if templates and templates.get('data'):
             return jsonify(templates), 200  # OK
