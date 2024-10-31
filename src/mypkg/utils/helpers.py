@@ -5,51 +5,89 @@
 
 """ MYPKG """
 
-__updated__ = "2024-07-06 17:23:46"
+__updated__ = "2024-10-31 21:12:58"
 
+import json
+from flask import request, jsonify, g
+from functools import wraps
 from time import time
-from flask import request, jsonify
-from flask import current_app
+from database.redis_conn_pool import get_redis
+
+# from utils.logger import logger
+# from utils.trace import get_trace_id
 
 
-# Basic decorator for checking the API key in the header
-def headerapikey(func):
-    """Check the header for the API key"""
-
-    def wrapper(*args, **kwargs):
-        try:
-            apikey = request.headers.get("X-API-KEY")
-            if apikey in current_app.config["X_API_KEY"]:  # OR apikey in redis.get("api:keys")
-                return func(*args, **kwargs)
-            else:
-                return {"error": "Unauthorized"}, 401  # Unauthorized
-        except Exception as e:
-            return jsonify({"wrapper_error": str(e)}), 500  # Internal Server Error
-
-    wrapper.__name__ = func.__name__
-    wrapper.__doc__ = func.__doc__
-    wrapper.__module__ = func.__module__
-
-    return wrapper
-
-
-# Measure the time taken to execute a function
 def exectime(func):
-    """Measure the time taken to execute a function."""
+    """
+    Measure the time taken to execute a function.
+    """
+
+    # -- Initialization of function trace id
+    # trace_id = get_trace_id()
 
     def wrapper(*args, **kwargs):
         start_time = time.time()
         result = func(*args, **kwargs)
         end_time = time.time()
-        print(f"Time taken: {end_time - start_time:.2f} seconds")
+        reportedtime = end_time - start_time
+        print(reportedtime)
+        # logger.info("%s | %s | Exec timee: %s:.2f seconds", request.method, trace_id, reportedtime)
         return result
 
     return wrapper
 
 
-# Format the internal Flask error messages for the JSON response
+from functools import wraps
+from flask import request, jsonify
+from database.redis_conn_pool import get_redis
+from utils.trace import get_trace_id
+from utils.logger import logger
+
+
+def headerapikey(func):
+    """
+    Check the header for the API key.
+    """
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        trace_id = get_trace_id()
+        try:
+            apikey = request.headers.get("X-API-KEY")
+
+            # -- Check if there is the X-API-KEY header
+            if not apikey:
+                logger.warning("%s | %s | API key is missing", request.method, trace_id)
+                return jsonify({"error": "API key is missing"}), 400  # Bad Request
+
+            # -- Check if the API key exists in the hash and retrieve the associated metadata
+            redis_conn = get_redis()
+            user_info = redis_conn.hget("sec_apikeys", apikey)
+
+            # -- Check if the API key exists in the Redis set
+            if user_info:
+                logger.info("%s | %s | API key is valid", request.method, trace_id)
+                return func(*args, **kwargs)
+            else:
+                logger.warning(
+                    "%s | %s | Unauthorized access attempt with API key: %s", request.method, trace_id, apikey
+                )
+                return jsonify({"error": "Unauthorized"}), 401  # Unauthorized
+
+        except Exception as error:
+            logger.error("%s | %s | Exception found; %s", request.method, trace_id, error)
+            return jsonify({"wrapper_error": str(error)}), 500  # Internal Server Error
+
+    return wrapper
+
+
 def format_error_message(error_dict):
-    """Parse the internal error messages and format them for using them in a JSON response"""
+    """
+    Parse the internal error messages and format them for using them in a JSON response.
+    """
+
+    # -- Initialization of function trace id
+    # trace_id = get_trace_id()
 
     error_messages = []
     for field, errors in error_dict.items():
@@ -62,5 +100,7 @@ def format_error_message(error_dict):
             for error in errors:
                 error_value_string = ", ".join(error) if isinstance(error, list) else error
                 error_messages.append(f"{field}: {error_value_string}")
+
+    # logger.info("%s | %s | Errors reported; %s", request.method, trace_id, json.dumps(error_messages))
 
     return "\n".join(error_messages)

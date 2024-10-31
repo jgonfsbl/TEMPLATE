@@ -11,35 +11,75 @@ Pre-Commit has been installed into this repository as a dependency. In order for
   pre-commit install
 ```
 
+### Database model (DDL)
+For th API to be fully operational is best to create a minimal databae with a single table so evevery endpoint will work as expected.
+
+The database DDL can be obtained from file [ [database_ddl.sql](resources/database_ddl.sql) ] or you can simply use the in-line version that follows:
+
+```
+create table templates
+(
+    tidx        serial
+        constraint templates_pk
+            primary key,
+    templateid  uuid      default gen_random_uuid() not null,
+    name        varchar   default ''::character varying,
+    description varchar   default ''::character varying,
+    content     varchar   default ''::character varying,
+    created     timestamp default now(),
+    modified    timestamp default now()
+);
+
+alter table templates
+    owner to root;
+```
+
+
 ### Environment variables and database migrations
 Create a `.env` file in the project root directory with the configuration variables for databse, among other variables that might also exist there:
 
 ```
-export FLASK_APP=app.py
-export FLASK_ENV=development
-export FLASK_DEBUG=True
-export FLASK_HOST=127.0.0.1
-export FLASK_PORT=9000
-export FLASK_LOG_LEVEL=DEBUG
-export FLASK_SECRET_KEY="Sup3rC0mpl3xS3cr3tK3y"
+# -- Use: Flask configuration
+FLASK_APP=app.py
+FLASK_ENV=development
+FLASK_DEBUG=True
+FLASK_HOST=localhost
+FLASK_PORT=9000
 
-export X_API_KEY=c4dd4532-6275-4b51-bb18-d84e7ac3262e
+# -- Secret key
+FLASK_SECRET_KEY="Sup3rC0mpl3xS3cr3tK3y"
 
-export GUNIPORT=5000
+# -- Log level
+FLASK_LOG_LEVEL=DEBUG
 
-export PROJECT_NAME=mypkg
-export SQITCH_DIR=resources
-export DB_ENGINE=pg
-export DB_USER=root
-export DB_PASS=password
-export DB_HOST=localhost
-export DB_PORT=5432
-export DB_NAME=mypkg
+# -- Postgres configuration
+DB_ENGINE=pg
+DB_USER=root
+DB_PASS=password
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=mypkg
+
+# -- Redis configuration
+REDIS_HOST=localhost
+REDIS_PORT=5432
+REDIS_PASS=password
+REDIS_DB=0
+REDIS_MAX_CONN=50
+
+# -- Rate limit settings (connections per minute)
+DEFAULT_RATE_LIMIT=10
+
+# -- Enable or disable Prometheus metrics
+PROMETHEUS_ENABLED=False
+
+# -- Use: Gunicorn configuration
+GUNIPORT=9000
 ```
 
-## REPOSITORY MANAGEMENT
+## DEVELOPMENT PROCESS
 
-### Using the Makefile
+In  order adecquately test the API there is a resource in the `resources` folder to import into `Insomnia` (by Kong&#8482; ) or `Postman`&#8482;. It's a JSON file with all the endpoints preconfigured according to the OpenAPI 3 specification. 
 
-The Makefile in this project simplifies the management of database migrations and other tasks associated with database setup using Sqitch. Below are the commands available in the Makefile, what they do, and how to use them.
+The file is [ [insomnia_project.json](resources/insomnia_project.json) ]. 
 

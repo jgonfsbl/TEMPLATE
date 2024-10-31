@@ -5,7 +5,7 @@
 
 """ MYPKG """
 
-__updated__ = "2024-07-04 17:59:00"
+__updated__ = "2024-10-31 20:39:44"
 
 
 from psycopg2 import pool
@@ -18,7 +18,9 @@ maxconn = 20  # Maximum number of connections to keep in the pool
 
 
 def init_db():
-    """Initialize the database connection pool"""
+    """
+    Initialize the database connection pool
+    """
     g.db_pool = pool.SimpleConnectionPool(
         minconn,
         maxconn,
@@ -31,21 +33,27 @@ def init_db():
 
 
 def get_db():
-    """Get a database connection from the pool"""
+    """
+    Get a database connection from the pool
+    """
     if "db_conn" not in g:
         g.db_conn = g.db_pool.getconn()
     return g.db_conn
 
 
 def close_db():
-    """Close the database connection and return it to the pool"""
+    """
+    Close the database connection and return it to the pool
+    """
     db_conn = g.pop("db_conn", None)
     if db_conn is not None:
         g.db_pool.putconn(db_conn)
 
 
 def execute_query(query, params=None, commit=False):
-    """Execute a SQL query and return a RealDictCursor (a Python dictionary)"""
+    """
+    Execute a SQL query and return a RealDictCursor (a Python dictionary)
+    """
     conn = get_db()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     try:
@@ -59,7 +67,9 @@ def execute_query(query, params=None, commit=False):
 
 
 def rollback():
-    """Rollback the current transaction"""
+    """
+    Rollback the current transaction
+    """
     conn = get_db()
     conn.rollback()
     close_db()
