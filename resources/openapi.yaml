@@ -1,0 +1,294 @@
+openapi: 3.0.3
+
+info:
+  title: "TEMPLATE"
+  description: "SAFE BYTE LABS SL"
+  version: "0.1.0"
+
+servers:
+  - url: "https://localhost:8000"
+    description: "Base Environment"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+
+tags:
+  - name: "Apex"
+    description: "API root"
+  - name: "Security"
+    description: "Security namespace"
+  - name: "Templates"
+    description: "Templates namespace"
+
+
+paths:
+
+  /:
+    get:
+      description: "The root endpoint is used o get HATEOAS from the microservice API"
+      summary: "Index"
+      tags:
+        - "Apex"
+      parameters: []
+      responses:
+        '200':
+          description: "successful"
+        '401':
+          description: "authorization failed"
+        '422':
+          description: "validation failed"
+        '500':
+          description: "unknown server error"
+      security: []
+
+  /status:
+    get:
+      description: "The status endpoint is used by load balancers and CDN to ensure the microservice is listening and not dead"
+      summary: "Status"
+      tags:
+        - "Apex"
+      parameters: []
+      responses:
+        '200':
+          description: "successful"
+        '401':
+          description: "authorization failed"
+        '422':
+          description: "validation failed"
+        '500':
+          description: "unknown server error"
+      security: []
+
+
+
+  /sec/authn:
+    post:
+      description: "Used for Authentication purposes"
+      summary: "Sec AuthN"
+      tags:
+        - "Security"
+      parameters: []
+      responses:
+        '200':
+          description: "successful"
+        '401':
+          description: "authorization failed"
+        '422':
+          description: "validation failed"
+        '500':
+          description: "unknown server error"
+      security: []
+
+  /sec/authz:
+    post:
+      description: "Used for Authorization purposes"
+      summary: "Sec AuthZ"
+      tags:
+        - "Security"
+      parameters: []
+      responses:
+        '200':
+          description: "successful"
+        '401':
+          description: "authorization failed"
+        '422':
+          description: "validation failed"
+        '500':
+          description: "unknown server error"
+      security: []
+
+
+
+  /templates:
+    get:
+      description: "A regular endpoint for GET (create) verbs"
+      summary: "Get Templates"
+      tags:
+        - "Templates"
+      parameters: []
+      responses:
+        '200':
+          description: "successful"
+        '401':
+          description: "authorization failed"
+        '422':
+          description: "validation failed"
+        '500':
+          description: "unknown server error"
+      security: []
+    post:
+      description: "A regular endpoint for POST (create) verbs"
+      summary: "Add New Template"
+      tags:
+        - "Templates"
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                key: "00000001A"
+                number: 123
+                name: "name"
+                group1:
+                  - type: "key1"
+                    severity: "value1"
+                  - type: "key2"
+                    severity: "value2"
+                group2:
+                  - type: "keynumber1"
+                    value: 100
+                    unit: "meters"
+                  - type: "keynumber2"
+                    value: 1
+                    unit: "percent"
+                group3:
+                  - type: "keyother1"
+                    value: 20
+                    unit: "measureunit"
+                  - type: "keyother2"
+                    value: 57
+                    unit: "measureunit"
+      responses:
+        '200':
+          description: "successful"
+        '401':
+          description: "authorization failed"
+        '422':
+          description: "validation failed"
+        '500':
+          description: "unknown server error"
+      security: []
+
+
+
+  /templates/12345678-90ab-cdef-1234567890abcdef1:
+
+    get:
+      description: "A regular endpoint for GET verbs"
+      summary: "Get Template by Id"
+      tags:
+        - "Templates"
+      parameters: []
+      responses:
+        '200':
+          description: "successful"
+        '401':
+          description: "authorization failed"
+        '422':
+          description: "validation failed"
+        '500':
+          description: "unknown server error"
+      security: []
+      
+    put:
+      description: "A regular endpoint for PUT (update) verbs"
+      summary: "Update Templates by Id"
+      tags:
+        - "Templates"
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                nif: "00000001A"
+                age: 62
+                gender: "man"
+                concerns:
+                  - type: "oilyandshiny"
+                    severity: "moderate"
+                  - type: "dryness"
+                    severity: "none"
+                  - type: "spots"
+                    severity: "moderate"
+                  - type: "wrinkles"
+                    severity: "none"
+                  - type: "dilatedpores"
+                    severity: "moderate"
+                  - type: "redness"
+                    severity: "none"
+                  - type: "sensitivity"
+                    severity: "none"
+                  - type: "sagging"
+                    severity: "moderate"
+                  - type: "brightness"
+                    severity: "none"
+                metrics:
+                  - type: "redness"
+                    value: 80
+                    unit: "percent"
+                  - type: "uniformness"
+                    value: 68
+                    unit: "percent"
+                  - type: "pigmentation"
+                    value: 70
+                    unit: "percent"
+                  - type: "skintone"
+                    value: 50
+                    unit: "percent"
+                  - type: "skintoneclass"
+                    value: "light"
+                    unit: "agreedscale"
+                  - type: "lines"
+                    value: 50
+                    unit: "percent"
+                  - type: "acne"
+                    value: 10
+                    unit: "percent"
+                  - type: "pores"
+                    value: 56
+                    unit: "percent"
+                  - type: "translucency"
+                    value: 80
+                    unit: "percent"
+                  - type: "hydration"
+                    value: 18
+                    unit: "percent"
+                weather:
+                  - type: "temperature"
+                    value: 26
+                    unit: "celsius"
+                  - type: "pollution"
+                    value: 57
+                    unit: "index"
+                  - type: "humidity"
+                    value: 46
+                    unit: "percent"
+                  - type: "uvindex"
+                    value: 20
+                    unit: "index"
+      responses:
+        '200':
+          description: "successful"
+        '401':
+          description: "authorization failed"
+        '422':
+          description: "validation failed"
+        '500':
+          description: "unknown server error"
+      security: []
+
+    delete:
+      description: "A regular endpoint for DELETE (remove) verbs"
+      summary: "Remove Template by Id"
+      tags:
+        - "Templates"
+      parameters: []
+      responses:
+        '200':
+          description: "successful"
+        '401':
+          description: "authorization failed"
+        '422':
+          description: "validation failed"
+        '500':
+          description: "unknown server error"
+      security: []
+  

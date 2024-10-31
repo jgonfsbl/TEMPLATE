@@ -110,8 +110,6 @@ bower_components/
 # IDEs and editors
 .idea/
 
-# local resources folder used by Sqitch
-resources/*
 
 # misc
 .sass-cache/
