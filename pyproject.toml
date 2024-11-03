@@ -10,9 +10,6 @@ readme = "README.md"
 #
 packages = [{ include = "mypkg", from = "src" }]
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.2.2"
-
 [tool.semantic_release]
 branch = "main"
 version_variables = ["src/mypkg/__init__.py:__version__"]
@@ -22,18 +19,30 @@ pythonpath = ["src"]
 #
 # -- manually added - end of block ------------------------
 
+[tool.black]
+include = '\.pyi?$'
+line-length = 120
+skip-string-normalization = true
+
+#
+# NEW:
+#   poetry self add poetry-plugin-export
+#
+# OLD:
+#   poetry export -f requirements.txt --output requirements.txt --without-hashes
+#
 [tool.poetry.dependencies]
 python = "^3.12"
 Flask = "^3.0.3"
 python-dotenv = "^1.0.1"
 psycopg2-binary = "^2.9.9"
 marshmallow = "^3.21.3"
-pulumi = "^3.122.0"
-pulumi-aws = "^6.43.0"
 requests = "^2.32.3"
 redis = "^5.0.7"
 flask-limiter = "^3.8.0"
 
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.2"
 
 [build-system]
 requires = ["poetry-core"]
