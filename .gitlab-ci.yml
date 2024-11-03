@@ -1,0 +1,187 @@
+##############################################################################
+#
+# GitLab CI/CD pipeline definition
+# 2022-11-17 by Jonathan Gonzalez <jgonf@safebytelabs.com>
+#
+##############################################################################
+#
+# Using the official Python Docker image as base
+image: "python:alpine"
+
+# Change PIP cache directory to be inside the project directory since we can
+# only cache local items.
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  SECURE_LOG_LEVEL: "debug"
+
+# List of stages the pipeline will be composed of
+stages:
+  - Linting
+  - Static Analysis
+  - Composition Analysis
+  - Test
+  - Build
+  - Deploy
+  - Cleanup
+
+
+# ----------------------------------------------------------------------------
+# Stage 1: Code linting
+#
+mypy:
+  stage: Linting
+  allow_failure: true
+  script:
+    - install_dependencies
+    - pip install mypy
+    - python -m mypy src
+
+flake8:
+  stage: Linting
+  allow_failure: true
+  script:
+    - install_dependencies
+    - pip install flake8
+    - flake8 src --max-line-length=120 --statistics --count
+
+pylint:
+  stage: Linting
+  allow_failure: true
+  script:
+    - install_dependencies
+    - pip install pylint
+    - pylint src/
+
+
+# ----------------------------------------------------------------------------
+# Stage 2: Static Application Security Testing (SAST)
+#
+# Code analysis
+bandit:
+  stage: Static Analysis
+  allow_failure: true
+  script:
+    - install_dependencies
+    - pip install tox bandit
+    - bandit src -r
+
+terrascan:
+  stage: Static Analysis
+  allow_failure: true
+  before_script:
+    - echo "Terrascan IaC analyzer running..."
+  image:
+    name: tenable/terrascan:latest
+    entrypoint: ["/bin/sh", "-c"]
+  script:
+    - cd iac
+    - /go/bin/terrascan scan . --iac-type docker --severity high
+
+
+# ----------------------------------------------------------------------------
+# Stage 3: Software Composition Analysis (SCA)
+#
+# Third-party libraries security checking
+jake:
+  stage: Composition Analysis
+  allow_failure: true
+  script:
+    - install_dependencies
+    - pip install jake
+    - jake ddt --clear-cache -o sbom.json --output-format json --whitelist tests/jake-whitelist.json
+  artifacts:
+    reports:
+      sast: /builds/<user>/<project>/sbom.json
+
+
+# ----------------------------------------------------------------------------
+# Stage 4: Application testing
+#
+# Unit Testing via PyTest
+# Test coverage parsing in GitLab config: '^TOTAL.+?(\d+\%)$' or '/TOTAL.*\s+(\d+%)$/'
+pytest:
+  stage: Test
+  allow_failure: true
+  script:
+    - install_dependencies
+    - pip install pytest coverage
+    - export PYTHONPATH="$PYTHONPATH:."
+    - python -c "import sys;print(sys.path)"
+    - coverage erase
+    - coverage run -m pytest
+    - coverage report --fail-under=80 --no-skip-covered --include="tests/*"
+    - coverage xml --fail-under=80 -o tests/coverage.xml
+  coverage: '/TOTAL.*\s+(\d+%)$/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: /builds/<user>/<project>/tests/coverage.xml
+
+
+# ----------------------------------------------------------------------------
+# Stage 5: Artefact building
+#
+# Compilation job
+build:
+  stage: Build
+  allow_failure: true
+  only:
+    - main
+  script:
+    - echo "Building code will be inserted here"
+
+
+# ----------------------------------------------------------------------------
+# Stage 6: Artefact deployment
+#
+# Deploy to pre-production when artefact is in hotfix branch
+deploy-to-preprod:
+  stage: Deploy
+  allow_failure: true
+  only:
+    - hotfix
+  script:
+    - echo "Pre-Production deployment code will be inserted here"
+
+# Deploy to pre-production when artefact is in main branch
+deploy-to-prod:
+  stage: Deploy
+  allow_failure: true
+  only:
+    - main
+  script:
+    - echo "Production deployment code will be inserted here"
+
+
+# ----------------------------------------------------------------------------
+# Stage 7: Clean up
+#
+# Remove all the mess and clean up environments
+cleanup:
+  stage: Cleanup
+  allow_failure: true
+  script:
+    - echo "Clean up takes place here"
+
+
+# ----------------------------------------------------------------------------
+# Common DevOps machinery
+#
+.common_devops: &common_devops |
+  function install_dependencies() {
+    apk update && apk add --no-cache curl jq && rm -rf /var/cache/apk/*
+    pip install virtualenv
+    virtualenv venv
+    source venv/bin/activate
+    pip install -U pip setuptools
+    pip install -r requirements/devel.txt
+    echo "----------------------------------------"
+    pwd
+    ls -l
+    python3 -V
+    echo "----------------------------------------"
+  }
+
+before_script:
+  *common_devops
