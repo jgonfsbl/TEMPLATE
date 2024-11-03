@@ -2,9 +2,16 @@ FROM python:3.12.2-alpine3.19
 LABEL maintainer="Jonathan Gonzalez <jgonf@safebytelabs.com>"
 ARG GIT_BRANCH
 
+# Install system dependencies
 ENV RUN_DEPENDENCIES="python3 py3-pip"
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONFAULTHANDLER=1
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONFAULTHANDLER=1 \
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100 \
 
 # Let service stop gracefully
 STOPSIGNAL SIGQUIT
@@ -25,7 +32,7 @@ WORKDIR /opt/app
 COPY ./requirements.txt .
 
 # Copy project files into /opt/app
-COPY ./src/cosper/ .
+COPY ./src/myappfolder/ .
 
 # Install project requirements
 RUN pip install --no-cache-dir -r requirements.txt
