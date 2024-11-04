@@ -25,11 +25,8 @@ line-length = 120
 skip-string-normalization = true
 
 #
-# NEW:
-#   poetry self add poetry-plugin-export
-#
-# OLD:
-#   poetry export -f requirements.txt --output requirements.txt --without-hashes
+# poetry export -f requirements.txt --output requirements.txt --without-hashes
+# awk '{ print $1 }' requirements.txt > temp.txt && mv temp.txt requirements.txt
 #
 [tool.poetry.dependencies]
 python = "^3.12"
