@@ -7,14 +7,12 @@
 
 __updated__ = "2024-10-31 21:12:58"
 
-import json
-from flask import request, jsonify, g
-from functools import wraps
 from time import time
+from functools import wraps
+from flask import request, jsonify
 from database.redis_conn_pool import get_redis
-
-# from utils.logger import logger
-# from utils.trace import get_trace_id
+from utils.trace import get_trace_id
+from utils.logger import logger
 
 
 def exectime(func):
@@ -22,26 +20,17 @@ def exectime(func):
     Measure the time taken to execute a function.
     """
 
-    # -- Initialization of function trace id
-    # trace_id = get_trace_id()
-
     def wrapper(*args, **kwargs):
         start_time = time.time()
         result = func(*args, **kwargs)
         end_time = time.time()
         reportedtime = end_time - start_time
         print(reportedtime)
-        # logger.info("%s | %s | Exec timee: %s:.2f seconds", request.method, trace_id, reportedtime)
         return result
 
     return wrapper
 
 
-from functools import wraps
-from flask import request, jsonify
-from database.redis_conn_pool import get_redis
-from utils.trace import get_trace_id
-from utils.logger import logger
 
 
 def headerapikey(func):
@@ -52,6 +41,7 @@ def headerapikey(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         trace_id = get_trace_id()
+
         try:
             apikey = request.headers.get("X-API-KEY")
 
@@ -86,9 +76,6 @@ def format_error_message(error_dict):
     Parse the internal error messages and format them for using them in a JSON response.
     """
 
-    # -- Initialization of function trace id
-    # trace_id = get_trace_id()
-
     error_messages = []
     for field, errors in error_dict.items():
         if isinstance(errors, dict):
@@ -100,7 +87,5 @@ def format_error_message(error_dict):
             for error in errors:
                 error_value_string = ", ".join(error) if isinstance(error, list) else error
                 error_messages.append(f"{field}: {error_value_string}")
-
-    # logger.info("%s | %s | Errors reported; %s", request.method, trace_id, json.dumps(error_messages))
 
     return "\n".join(error_messages)
