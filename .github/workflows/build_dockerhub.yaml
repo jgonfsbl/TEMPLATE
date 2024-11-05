@@ -63,7 +63,8 @@ jobs:
       - name: Set version variable
         id: version
         run: |
-          version=$(cat ${{ vars.CI_VER_FILE }} | grep version | awk '{ print $3 }' | tr -d '"')
+          version=$(cat ${{ vars.CI_VER_FILE }} | grep __version__ | awk '{ print $3 }' | tr -d '"')
+          echo "Version fetched: '$version'"
           echo "containerver=$version" >> $GITHUB_OUTPUT
 
       - name: Extract dockerfile suffix
@@ -74,6 +75,7 @@ jobs:
 
       - name: Build & Push to Docker Hub
         uses: docker/build-push-action@v5
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         with:
           file: ${{ vars.CI_DOCKERFILE }}
           platforms: ${{ vars.CI_PLATFORMS }}
