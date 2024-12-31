@@ -80,10 +80,6 @@ def get_templates():
         limit = 50
 
     try:
-<<<<<<< HEAD
-        # -- Evaluate the request and return the appropriate response
-        templates = get_all_templates(limit=limit, offset=offset)
-=======
         # Retrieve limit and offset from query parameters, with defaults
         limit = request.args.get('limit', default=10, type=int)
         offset = request.args.get('offset', default=0, type=int)
@@ -97,7 +93,6 @@ def get_templates():
         
         # -- Evaluate if there are records to return or return an error
         # if templates and templates.get('data'):
->>>>>>> a5689c47c4ebf4e39f9aa6c519b2d291a4292204
         if templates:
             return jsonify(templates), 200  # OK
         else:

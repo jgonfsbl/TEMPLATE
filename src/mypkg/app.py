@@ -22,6 +22,7 @@ from utils.helpers import headerapikey
 from utils.logger import logger, setup_logging
 from utils.rate_limiter import init_limiter, rate_limit
 from utils.trace import generate_trace_id, get_trace_id
+from utils.prometheus import get_metrics
 
 
 # -- Custom encoder for JSON serialization
@@ -71,6 +72,8 @@ app.add_url_rule("/templates/<template_id>", "delete_template_id", delete_templa
 app.add_url_rule("/sec/authn", "authn", authenticate, methods=["POST"])
 app.add_url_rule("/sec/authz", "authz", authorize, methods=["POST"])
 
+# Metrics routes
+app.add_url_rule("/metrics", "metrics", get_metrics, methods=["GET"])
 
 ###############################################################################
 #

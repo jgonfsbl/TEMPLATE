@@ -7,7 +7,7 @@
 
 __updated__ = "2024-10-31 21:12:58"
 
-from time import time
+import time
 from functools import wraps
 from flask import request, jsonify
 from database.redis_conn_pool import get_redis
