@@ -7,11 +7,11 @@ Key features include:
 - Database integration with PostgreSQL for persistent storage
 - Caching and rate limiting with Redis
 - Prometheus metrics for monitoring
-- Logging and tracing capabilities with OpenTelemetry (OTEL)
+- Logging and tracing capabilities 
 - Pre-commit hooks for code quality
-- Infrastructure as Code (IaC) pipelien automation with Bitbucket Pipelines from Atlassian
-- Docker (OCI) containerization scripts
-- Job configuration for scheduling with Hashicorp Nomad
+- Infrastructure as Code (IaC) pipeline automation with AtlassianBitbucket Pipelines
+- Docker (OCI) containerization script
+- Job configuration for task scheduling with Hashicorp Nomad
 
 This project is designed with scalability and performance in mind, incorporating best practices for API development and database management.
 ## DEVELOPMENT PROCESS
