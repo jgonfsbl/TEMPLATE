@@ -7,9 +7,13 @@
 
 __updated__ = "2024-10-31 13:13:53"
 
+
+# -- Standard library imports
 import logging
 import sys
+# -- Local imports
 from config import Config
+
 
 # --
 # -- Architecture Decision Records (ADR)
@@ -29,20 +33,19 @@ from config import Config
 # --
 
 
+# -- Create a globally available logger
+logger = logging.getLogger(__name__)
+
+
 class CustomFormatter(logging.Formatter):
     """
     Custom Formatter to handle cases when 'trace_id' is missing in the log record.
     """
-
     def format(self, record):
         # Add default trace_id if it's missing
         if not hasattr(record, "trace_id"):
             record.trace_id = "N/A"  # Default trace_id if not set
         return super().format(record)
-
-
-# -- Create a globally available logger
-logger = logging.getLogger(__name__)
 
 
 def setup_logging():
@@ -52,12 +55,10 @@ def setup_logging():
     """
     if not logger.hasHandlers():
         handler = logging.StreamHandler(sys.stdout)
-        formatter = CustomFormatter("%(asctime)s | %(levelname)s | %(module)s:%(funcName)s:%(lineno)d | %(message)s")
+        formatter = CustomFormatter("%(asctime)s | %(levelname)s | %(message)s | %(module)s:%(funcName)s:%(lineno)d ")
         handler.setFormatter(formatter)
         logger.addHandler(handler)
-
     logger.setLevel(Config.LOG_LEVEL)
     logging.getLogger("werkzeug").disabled = True  # Disable Flask's built-in logger
     logger.propagate = False  # Avoid root logger propagation
-
     return logger

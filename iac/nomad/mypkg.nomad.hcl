@@ -33,7 +33,7 @@ job "JOB_NAME_FOR_SYSTEM" {
       check {
         name     = "PROTOCOL alive"
         type     = "tcp"
-        interval = "10s"
+        interval = "60s"
         timeout  = "2s"
       }
     }

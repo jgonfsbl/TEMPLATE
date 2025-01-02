@@ -61,7 +61,7 @@ def read_record_redis(key):
     value_json = conn.get(key)
     if value_json is None:
         return None
-    value = json.loads(value_json)
+    value = json.loads(str(value_json))
     return value
 
 

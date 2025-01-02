@@ -10,7 +10,7 @@ __updated__ = "2024-10-31 21:12:58"
 import re
 from pathlib import Path
 
-init_file = Path("src/prospect/__init__.py")
+init_file = next(Path("src").glob("*/__init__.py"))
 pyproject_file = Path("pyproject.toml")
 
 # Read the version from __init__.py

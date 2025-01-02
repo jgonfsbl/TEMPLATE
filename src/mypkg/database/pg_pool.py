@@ -17,11 +17,11 @@ minconn = 1  # Minimum number of connections to keep in the pool
 maxconn = 20  # Maximum number of connections to keep in the pool
 
 
-def init_db():
+def init_pg():
     """
     Initialize the database connection pool
     """
-    g.db_pool = pool.SimpleConnectionPool(
+    g.pgsql_pool = pool.SimpleConnectionPool(
         minconn,
         maxconn,
         user=current_app.config["DB_USER"],
@@ -32,44 +32,43 @@ def init_db():
     )
 
 
-def get_db():
+def get_pg():
     """
     Get a database connection from the pool
     """
-    if "db_conn" not in g:
-        g.db_conn = g.db_pool.getconn()
-    return g.db_conn
+    if "pgsql_conn" not in g or g.pgsql_conn.closed != 0:
+        g.pgsql_conn = g.pgsql_pool.getconn()
+    return g.pgsql_conn
 
 
-def close_db():
+def close_pg():
     """
     Close the database connection and return it to the pool
     """
-    db_conn = g.pop("db_conn", None)
-    if db_conn is not None:
-        g.db_pool.putconn(db_conn)
+    if "pgsql_conn" in g:
+        g.pgsql_pool.putconn(g.pop("pgsql_conn"))
 
 
-def execute_query(query, params=None, commit=False):
+def execute_pg_query(query, params=None, commit=False):
     """
     Execute a SQL query and return a RealDictCursor (a Python dictionary)
     """
-    conn = get_db()
+    conn = get_pg()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     try:
         cursor.execute(query, params or ())
         if commit:
             conn.commit()
-    except Exception as error:
+    except Exception:
         conn.rollback()
-        raise error
+        raise
     return cursor
 
 
-def rollback():
+def rollback_pg():
     """
     Rollback the current transaction
     """
-    conn = get_db()
+    conn = get_pg()
     conn.rollback()
-    close_db()
+    close_pg()

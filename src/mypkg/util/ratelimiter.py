@@ -8,13 +8,17 @@
 __updated__ = "2024-10-31 21:36:55"
 
 
+# -- Third-party imports
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+# -- Local imports
 from config import Config
+
 
 # Initialize Limiter without specifying Redis connection pool at this point
 limiter = Limiter(
-    key_func=get_remote_address, storage_uri=f"redis://:{Config.REDIS_PASS}@{Config.REDIS_HOST}:{Config.REDIS_PORT}"
+    key_func=get_remote_address,
+    storage_uri=f"redis://:{Config.REDIS_PASS}@{Config.REDIS_HOST}:{Config.REDIS_PORT}"
 )
 
 

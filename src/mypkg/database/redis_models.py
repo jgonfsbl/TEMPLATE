@@ -9,7 +9,7 @@ __updated__ = "2024-10-31 13:49:33"
 
 
 from flask import request, jsonify
-from database.redis_conn_pool import (
+from database.redis_pool import (
     record_exists_redis,
     execute_command_redis,
     read_record_redis,

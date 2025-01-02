@@ -10,12 +10,12 @@ __updated__ = "2024-07-05 10:43:22"
 
 import json
 import pytest
-from mypkg.app import get_status, app
+from src.mypkg.app import get_status, app
 
 
 def test_get_index():
     client = app.test_client()
-    headers = {"X-API-KEY": "e8b21d5c-6658-481b-abe2-fd990fb7c8a6"}
+    headers = {"X-API-KEY": "12345678-90ab-cdef-1234-567890abcdef"}
     response = client.get("/", headers=headers)
     assert response.status_code == 200
     assert response.content_type == "application/json"

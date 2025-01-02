@@ -12,7 +12,7 @@ packages = [{ include = "mypkg", from = "src" }]
 
 [tool.semantic_release]
 branch = "main"
-version_variables = ["src/mypkg/__init__.py:__version__"]
+version_variables = ["src/*/__init__.py:__version__"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
@@ -24,10 +24,6 @@ include = '\.pyi?$'
 line-length = 120
 skip-string-normalization = true
 
-#
-# poetry export -f requirements.txt --output requirements.txt --without-hashes
-# awk '{ print $1 }' requirements.txt > temp.txt && mv temp.txt requirements.txt
-#
 [tool.poetry.dependencies]
 python = "^3.12"
 Flask = "^3.0.3"
@@ -42,6 +38,7 @@ prometheus-client = "^0.21.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
+mypy = "^1.14.1"
 
 [build-system]
 requires = ["poetry-core"]

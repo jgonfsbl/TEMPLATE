@@ -1,0 +1,212 @@
+openapi: 3.0.3
+
+
+info:
+  title: RESTful API SKELeton
+  version: 1.0.0
+  description: >-
+    This RESTful API skeleton has been designed with educational purposes by Jonathan
+    González.
+    It is offered as-is and free of charge under MPLv2 license agreement by SAFE BYTE LABS SL.
+  termsOfService: safebytelabs.com/tos.html
+  contact:
+    email: jgonf@safebytelabs.com
+    name: Jonathan González
+    url: safebytelabs.com
+  license:
+    name: MPLv2
+    url: https://www.mozilla.org/en-US/MPL/2.0/
+
+
+servers:
+  - url: http://localhost:9000
+    description: Development environment
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+
+
+tags:
+  - name: "Index"
+    description: "API apex endpoint"
+  - name: "Status"
+    description: "Operational status"
+  - name: "Metrics"
+    description: "Prometheus metrics"
+  - name: "Templates"
+    description: "Template operations"
+
+
+paths:
+
+  /:
+    get:
+      description: 'The root of the API is normally an entry point where to show HATEOAS capabilities.'
+      summary: API root
+      tags:
+        - "Index"
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: authorization failed
+        '422':
+          description: validation failed
+        '500':
+          description: unknown server error
+      security: []
+
+
+  /status:
+    get:
+      description: 'API Gateways, Service Registries, Service Discoveries, App Mesh and/or simply Load Balancers need an endpoint where to check for health status, therefore this endpoint is meant to be consumed by infrastructures around this API.'
+      summary: Status endpoint for health checks
+      tags:
+        - "Status"
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: authorization failed
+        '422':
+          description: validation failed
+        '500':
+          description: unknown server error
+      security: []
+
+
+  /metrics:
+    get:
+      description: 'Prometheus needs an endpoint where to scrap for time series data to be later presented on a dashboard. The scrapping time differs between configurations but in general happens very oftern, so, this endpoint should be agile in execution time to block the less the possible the resources of the elemented running this API, being this a physical or virtual infrastructure, a container or a serverless function. '
+      summary: Endpoint for Prometheus scraping
+      tags:
+        - "Metrics"
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: authorization failed
+        '422':
+          description: validation failed
+        '500':
+          description: unknown server error
+      security: []
+
+
+  /templates:
+    get:
+      description: 'This endpoint list all templates at once with a soft limit impossed by the backend of 10 elements that can be taken to a hard limit of 100 elements at once. Pagination is feasible using URL parameters.'
+      summary: List all templates
+      tags:
+        - "Templates"
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 1
+          description: Maximum number of templates to return (backend hard limit is set to 100)
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 0
+          description: Number of templates to skip before starting to collect the result set (understand it as \# page)
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: authorization failed
+        '422':
+          description: validation failed
+        '500':
+          description: unknown server error
+      security: []
+    post:
+      description: 'This endpoint provides the means to add an element to the Postgres database.'
+      summary: Create a template
+      tags:
+        - "Templates"
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: authorization failed
+        '422':
+          description: validation failed
+        '500':
+          description: unknown server error
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: PutYourValueHere
+                description: PutYourValueHere
+                content: PutYourValueHere
+      security: []
+
+
+  /templates/{templateId}:
+    put:
+      description: 'This endpoint provides the means to update an element from the Postgres database.'
+      summary: Update an already existing template
+      tags:
+        - "Templates"
+      parameters:
+        - name: templateId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: authorization failed
+        '422':
+          description: validation failed
+        '500':
+          description: unknown server error
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: PutYourValueHere
+                description: PutYourValueHere
+                content: PutYourValueHere
+      security: []
+    delete:
+      description: 'This endpoint provides the means to delete an element from the Postgres database.'
+      summary: Remove a given template
+      tags:
+        - "Templates"
+      parameters:
+        - name: templateId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: authorization failed
+        '422':
+          description: validation failed
+        '500':
+          description: unknown server error
+      security: []

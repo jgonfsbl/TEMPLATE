@@ -8,7 +8,7 @@
 __updated__ = "2024-10-31 20:39:43"
 
 
-from database.pg_conn_pool import execute_query
+from database.pg_pool import execute_pg_query
 
 
 ###############################################################################
@@ -31,7 +31,7 @@ def add_new_template(template_data):
             VALUES (%s, %s, %s)
             RETURNING templateid;
         """
-        cursor = execute_query(
+        cursor = execute_pg_query(
             query,
             params=(template_data["name"], template_data["description"], template_data["content"]),
             commit=True,
@@ -47,7 +47,7 @@ def add_new_template(template_data):
 def get_all_templates(limit=10, offset=0):
     """Retrieve all templates from the database, with pagination support"""
     query = "SELECT * FROM templates ORDER BY tidx ASC LIMIT %s OFFSET %s;"
-    cursor = execute_query(query, (limit, offset))
+    cursor = execute_pg_query(query, (limit, offset))
     session_data = cursor.fetchall()
     #
     # Do some processing here with the session_data
@@ -69,7 +69,7 @@ def get_by_templateid(template_id):
 
     try:
         query = f"SELECT * FROM templates WHERE templateid = '{template_id}' ORDER BY tidx ASC;"
-        cursor = execute_query(query)
+        cursor = execute_pg_query(query)
         session_data = cursor.fetchone()
         response = session_data
         return response
@@ -104,7 +104,7 @@ def update_template(template_id, template_data):
     )
 
     # Execute the query
-    cursor = execute_query(query, params=params, commit=True)
+    cursor = execute_pg_query(query, params=params, commit=True)
     return cursor.rowcount
 
 
@@ -118,5 +118,5 @@ def delete_template(template_id):
     # Build the query
     query = f"DELETE FROM templates WHERE templateid = '{template_id}';"
     # Execute the query
-    cursor = execute_query(query, commit=True)
+    cursor = execute_pg_query(query, commit=True)
     return cursor.rowcount
